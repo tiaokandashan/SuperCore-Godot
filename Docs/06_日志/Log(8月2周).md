@@ -4,7 +4,7 @@
 
 ```yaml
 id: SCG-20260811-002
-status: draft
+status: completed
 operation: create
 created_by: "weijuncheng"
 executed_by: ["weijuncheng"]
@@ -26,34 +26,42 @@ relations:
   reverts: []
   conflicts_with: []
 started_at: 2026-08-11
-completed_at:
+completed_at: 2026-08-11
 ```
 
 目标：
 - 在项目总根目录初始化 Git 仓库，将完整可追踪项目内容上传到用户指定的 GitHub 空仓库。
 
 结果：
-- 已初始化本地 `main` 分支并配置 SSH 远端 `git@github.com:tiaokandashan/SuperCore-Godot.git`；提交与推送待执行。
+- 已在项目总根目录初始化 Git 仓库，本地分支为 `main`。
+- 已创建初始提交 `6b6ab7d`（`Initial commit`），包含 130 个项目源码、配置、测试和文档文件。
+- 已通过 HTTPS 将 `main` 推送到 `https://github.com/tiaokandashan/SuperCore-Godot.git`，并建立本地 `main` 对 `origin/main` 的上游跟踪。
 
 决策：
 - 本任务只建立版本库与远端，不改变框架迁移内容，因此独立于 `SCG-20260806-001`，不设置 `root_task` 或迁移依赖。
 - 沿用现有 Git 作者 `weijuncheng <@abc123456>`，不修改全局或仓库 Git 配置。
+- 用户提供的 SSH 地址因当前网络关闭 GitHub SSH 22/443 且本机没有 SSH 私钥而不可用；改用同一仓库的 HTTPS 地址和现有 Git Credential Manager 完成上传，不新增 GitHub 密钥。
 
 约束：
 - 不执行 `git pull`、强制推送、历史重写或 Unity 参考工程写入；远端存在已有引用时停止。
 - `Project/.gitignore` 必须排除 `.godot`、`bin` 和 `obj` 生成内容。
 
 文档：
-- 已登记总任务索引、月索引和本结构化日志。
+- 已同步月索引和本结构化日志；任务完成后已从总未完成任务索引移除。
 
 后续：
-- 待完成远端校验、暂存审查、初始提交和推送。
+- 当前 `Module<T>.CompleteInit()` 使用 `GD.PushError`，与生命周期文档记录的 `Console.WriteLine` 不一致，并使 Godot 引擎外的独立测试发生原生访问冲突；本上传任务未改动该既有工作区内容，需另行确认修复。
 
 审查：
-- 待完成。
+- 已确认远端在上传前没有任何引用，没有执行拉取、强制推送或历史覆盖。
+- 已确认暂存区包含 130 个文件、3247 行，敏感信息扫描无命中；`.godot`、`bin`、`obj` 均被忽略。
+- 已确认上传内容与提交前工作区一致，没有修改 Unity 参考工程或 Git 用户配置。
 
 验证：
-- 待执行。
+- `git ls-remote https://github.com/tiaokandashan/SuperCore-Godot.git`：上传前成功且无输出，确认远端为空。
+- `git push -u origin main`：通过，远端新建 `main`，本地上游设置为 `origin/main`。
+- `dotnet build Project/SuperCore.csproj --no-restore --nologo`：通过，0 警告、0 错误。
+- `dotnet run --project Project/Tests/SuperCore/SuperCore.Tests.csproj --no-restore`：失败；当前 `Module<T>.CompleteInit()` 的 `GD.PushError` 在 Godot 引擎外触发 `System.AccessViolationException`。该文件在暂存前已是此状态，本任务按用户要求原样上传，没有越权修改。
 
 ## [SCG-20260811-001] Module 初始化完成日志
 
