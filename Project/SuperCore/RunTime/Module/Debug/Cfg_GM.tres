@@ -1,0 +1,6 @@
+[gd_resource type="Resource" script_class="GMCfg" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://SuperCore/RunTime/Module/Debug/GMCfg.cs" id="1_gm_cfg"]
+
+[resource]
+script = ExtResource("1_gm_cfg")

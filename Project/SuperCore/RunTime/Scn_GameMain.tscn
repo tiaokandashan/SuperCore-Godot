@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://c7whw1curphn1"]
+
+[ext_resource type="Script" uid="uid://cxeowsr21tuuo" path="res://SuperCore/RunTime/SuperCore.cs" id="1_super_core"]
+
+[node name="SuperCore" type="Node" unique_id=832936999]
+script = ExtResource("1_super_core")
